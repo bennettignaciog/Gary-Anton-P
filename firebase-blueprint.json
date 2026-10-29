@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "HistoryItem": {
+      "title": "HistoryItem",
+      "description": "A saved audio processing session record with stats and settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fileName": { "type": "string" },
+        "format": { "type": "string" },
+        "sampleRate": { "type": "number" },
+        "bitDepth": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "statsSummary": { "type": "string" },
+        "settings": { "type": "object" }
+      },
+      "required": ["id", "fileName", "format", "sampleRate", "bitDepth", "createdAt"]
+    },
+    "PresetItem": {
+      "title": "PresetItem",
+      "description": "A saved rack preset",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "settings": { "type": "object" }
+      },
+      "required": ["id", "name", "createdAt", "settings"]
+    }
+  },
+  "firestore": {
+    "/history/{historyId}": {
+      "schema": "HistoryItem",
+      "description": "Collection of processed audio history sessions"
+    },
+    "/presets/{presetId}": {
+      "schema": "PresetItem",
+      "description": "Collection of user-defined DSP rack presets"
+    }
+  }
+}

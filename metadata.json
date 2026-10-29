@@ -1,0 +1,8 @@
+{
+  "name": "VOXRACK",
+  "description": "90s Rackmount Vocal Leveling, Visual Parametric EQ & Audio Restoration Suite right in your browser.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

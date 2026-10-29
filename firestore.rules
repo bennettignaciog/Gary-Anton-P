@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // History collection: stores previous audio restoration sessions
+    match /history/{historyId} {
+      allow read: if isValidId(historyId);
+      allow create: if isValidId(historyId) &&
+        request.resource.data.keys().hasAll(['id', 'fileName', 'format', 'sampleRate', 'bitDepth', 'createdAt']) &&
+        request.resource.data.id is string && request.resource.data.id.size() <= 128 &&
+        request.resource.data.fileName is string && request.resource.data.fileName.size() <= 256 &&
+        request.resource.data.format is string && request.resource.data.format.size() <= 64 &&
+        request.resource.data.sampleRate is number &&
+        request.resource.data.bitDepth is number &&
+        request.resource.data.createdAt is string && request.resource.data.createdAt.size() <= 64;
+      allow update: if false; // History is append-only
+      allow delete: if isValidId(historyId);
+    }
+
+    // Presets collection: stores custom rack presets
+    match /presets/{presetId} {
+      allow read: if isValidId(presetId);
+      allow create, update: if isValidId(presetId) &&
+        request.resource.data.keys().hasAll(['id', 'name', 'createdAt', 'settings']) &&
+        request.resource.data.id is string && request.resource.data.id.size() <= 128 &&
+        request.resource.data.name is string && request.resource.data.name.size() <= 128 &&
+        request.resource.data.createdAt is string && request.resource.data.createdAt.size() <= 64;
+      allow delete: if isValidId(presetId);
+    }
+  }
+}
